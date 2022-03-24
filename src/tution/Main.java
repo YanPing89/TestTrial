@@ -5,6 +5,7 @@ import tution.student.*;
 import java.time.LocalDate;
 import java.util.*;
 
+
 public class Main {
 
     public static void main (String[] args) {
@@ -13,17 +14,19 @@ public class Main {
             int mainChoice = mainMenu();
             if (mainChoice == 1) {
                 enrollStudent(stuReg);
-            }else if (mainChoice == 2) {
+            } else if (mainChoice == 2) {
                 removeStudent(stuReg);
-            }else if (mainChoice == 3) {
+            } else if (mainChoice == 3) {
                 for (HashMap.Entry list : stuReg.entrySet()) {
                     System.out.println(list);
                 }
             } else if (mainChoice == 4) {
                 searchStudent(stuReg);
-            }else if (mainChoice == 5) {
-                sortStudent(stuReg);
-            } else if (mainChoice == 6) {
+            } else if (mainChoice == 5) {
+                filterStudentAge(stuReg);
+            }else if (mainChoice == 6) {
+                sortBy(stuReg);
+            }else if (mainChoice == 7) {
                 System.out.print("Thank you!");
                 break;
             }
@@ -31,19 +34,31 @@ public class Main {
 
     }
 
-        public static void enrollStudent (HashMap < Integer, Student > addStuList){
+        public static void enrollStudent (HashMap < Integer, Student > addStuList) {
             Scanner in = new Scanner(System.in);
             System.out.print("Enter Unique ID of Student: ");
-            int id = in.nextInt();
+            int id = 0;
+            try{
+                id = in.nextInt();
+            }catch (Exception e){
+                System.out.println("Wrong Input! Please Try Again!");
+                enrollStudent(addStuList);
+            }
             System.out.print("Enter Name of Student: ");
-            String name =  in.next();
+            String name = in.next();
             System.out.print("Date of Birth (yyyy-MM-dd):");
-            String dob =  in.next();
+            String dob = in.next();
+            try{
             LocalDate dobObf = LocalDate.parse(dob);
+            }catch (Exception e){
+                e.printStackTrace();
+                System.out.println("Wrong Input! Please Try Again!");
+                enrollStudent(addStuList);
+            }
             System.out.print("Enter Telephone number of Student: ");
             int telNum =  in.nextInt();
             addStuList.put(id,new Student(name,dob,telNum));
-            System.out.println("New Student Added In Successfully");
+            System.out.println("New student added successfully");
             }
 
         public static void removeStudent (HashMap < Integer, Student > remStuList){
@@ -67,8 +82,9 @@ public class Main {
             System.out.println("2)Remove a existing Student");
             System.out.println("3)List all existing Student");
             System.out.println("4)Search for existing Student with unique key");
-            System.out.println("5)Sort existing Student according to age group");
-            System.out.println("6)Exit");
+            System.out.println("5)Filter student according to age");
+            System.out.println("6)Sort student adding to DOB");
+            System.out.println("7)Exit");
             System.out.println("Enter Choice: ");
             return in.nextInt();
         }
@@ -83,29 +99,30 @@ public class Main {
                     }
                 }
             }
-             public static void sortStudent(HashMap < Integer, Student > sortStuList) {
+             public static void filterStudentAge(HashMap < Integer, Student > filterStuAge) {
                  Scanner in = new Scanner(System.in);
                  System.out.println("Please input the age: ");
                  LocalDate todayDate = LocalDate.now();
                  int inputAge = in.nextInt();
                  int nowYear = todayDate.getYear();
-                 for (Student student : sortStuList.values()){
+                 for (Student student : filterStuAge.values()) {
                      String dob = student.getBirthDate(); // "2022-03-03"
                      LocalDate dobObj = LocalDate.parse(dob);
                      int year = dobObj.getYear();   ///2022
                      //dobObj.getDayOfYear();
                      //dobObj.getMonth();
                      int age = nowYear - year;
-
-//                     if (age == inputAge ) {
-//                         System.out.println(student.toString());
+                     if (age == inputAge) {
+                         System.out.println(student.toString());
                      }
                  }
-            public static void sortBy(HashMap<Integer, Student> sortByStuList) {
-                List<Student> sortingList = new ArrayList(sortByStuList.values());
-                 Collections.sort(sortingList);
-                for(Student s: sortingList) {
-                System.out.println(s.toString());
-        }
-    }
+             }
+                 public static void sortBy (HashMap < Integer, Student > sortByStuList){
+                     List<Student> sortingList = new ArrayList(sortByStuList.values());
+                     Collections.sort(sortingList);
+                     for (Student s : sortingList) {
+                         System.out.println(s.toString());
+                     }
+                 }
+
 }
